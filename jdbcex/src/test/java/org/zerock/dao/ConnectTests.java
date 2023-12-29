@@ -1,5 +1,7 @@
 package org.zerock.dao;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -16,6 +18,23 @@ public class ConnectTests {
                 "webuser",
                 "220507");
         Assertions.assertNotNull(connection);
+        connection.close();
+    }
+
+    @Test
+    public void testHikariCP() throws Exception {
+        HikariConfig config = new HikariConfig();
+        config.setDriverClassName("org.mariadb.jdbc.Driver");
+        config.setJdbcUrl("jdbc:mariadb://localhost:3306/webdb");
+        config.setUsername("webuser");
+        config.setPassword("220507");
+        config.addDataSourceProperty("cachePrepStmts", "true");
+        config.addDataSourceProperty("prepStmtCacheSize", "250");
+        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+
+        HikariDataSource ds = new HikariDataSource(config);
+        Connection connection = ds.getConnection();
+        System.out.println(connection);
         connection.close();
     }
 }
